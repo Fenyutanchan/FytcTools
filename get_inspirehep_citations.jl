@@ -33,7 +33,7 @@ function get_citation_key_list(tex_file::String)::Vector{String}
 
     for key_range ∈ findall(r"\\(full)?cite(\[.*?\])?\{.*?\}", content)
         tmp_string = content[key_range]
-        tmp_range = findfirst(r"\{.*?\}", tmp_string)
+        tmp_range = (last ∘ findall)(r"\{.*?\}", tmp_string)
         key_string = tmp_string[first(tmp_range)+1:last(tmp_range)-1]
         append!(citation_key_list, split(key_string, ","))
     end
