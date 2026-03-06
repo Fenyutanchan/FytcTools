@@ -108,9 +108,15 @@ end
 
 function main(working_dir=pwd())
     tex_files = String[]
+    do_not_searching_directory_list = String[]
     for (this_dir, _, containing_files) ∈ walkdir(working_dir)
+        if any(abspath(this_dir) |> occursin, do_not_searching_directory_list)
+            @info "Skip `$(this_dir)` since `.do_not_searching_directory_list` detected in its parent directory."
+            continue
+        end
         if ".do_not_get_inspirehep_citations" ∈ containing_files
             @info "Skip `$(this_dir)` since `.do_not_get_inspirehep_citations` detected."
+            push!(do_not_searching_directory_list, abspath(this_dir))
             continue
         end
         tex_files = union!(tex_files, filter(endswith(".tex"), containing_files))
